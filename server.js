@@ -3,17 +3,28 @@ const {
   getProducts,
   getProduct,
   createProduct,
+  updateProduct,
+  removeProduct,
 } = require("./controllers/productController");
 
 const server = http.createServer((req, res) => {
+  console.log(req.url, typeof req.url);
   if (req.url === "/api/products" && req.method === "GET") {
     getProducts(req, res);
-  } else if (
-    req.url.match(/\/api\/products\/([0-9]+)/) &&
-    req.method === "GET"
-  ) {
+  } else if (req.url.match(/\/api\/products\/\w+/)) {
     const id = req.url.split("/")[3];
-    getProduct(req, res, id);
+
+    switch (req.method) {
+      case "GET":
+        getProduct(req, res, id);
+        break;
+      case "PUT":
+        updateProduct(req, res, id);
+        break;
+      case "DELETE":
+        removeProduct(req, res, id);
+        break;
+    }
   } else if ((req.url = "/api/products" && req.method === "POST")) {
     createProduct(req, res);
   } else {
